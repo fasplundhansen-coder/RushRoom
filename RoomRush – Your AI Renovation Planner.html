@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RoomRush – Your AI Renovation Planner</title>
+<meta name="description" content="Upload a photo of your room and redesign it with AI. Pick a style, colors and budget, then compare before and after. Free home renovation planner.">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#0b0b0c">
+<meta property="og:type" content="website">
+<meta property="og:title" content="RoomRush – Your AI Renovation Planner">
+<meta property="og:description" content="Transform your room with AI. Upload a photo, choose a style, and see your redesigned space.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🏠%3C/text%3E%3C/svg%3E">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"RoomRush","description":"AI home renovation planner that redesigns a room from a photo.","applicationCategory":"DesignApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
+<style>
+:root{--bg:#fff;--fg:#0b0b0c;--mut:#6b6b70;--card:#f4f4f5;--line:#e4e4e7;--inv:#0b0b0c;--invfg:#fff;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0b0c;--fg:#f5f5f6;--mut:#9a9aa1;--card:#18181b;--line:#2a2a2e;--inv:#f5f5f6;--invfg:#0b0b0c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b0b0c;--fg:#f5f5f6;--mut:#9a9aa1;--card:#18181b;--line:#2a2a2e;--inv:#f5f5f6;--invfg:#0b0b0c;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:64px;gap:12px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;letter-spacing:-.02em}
+.logo i{width:30px;height:30px;border-radius:9px;background:var(--inv);color:var(--invfg);display:grid;place-items:center;font-style:normal;font-size:15px}
+nav{display:flex;gap:4px;overflow-x:auto}
+nav a{padding:8px 14px;border-radius:99px;color:var(--mut);font-size:14px;font-weight:500;white-space:nowrap;transition:.2s}
+nav a:hover,nav a.on{background:var(--card);color:var(--fg)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;background:var(--inv);color:var(--invfg);padding:14px 26px;border-radius:99px;font:600 16px inherit;font-family:inherit;transition:transform .2s,opacity .2s}
+.btn:hover{transform:translateY(-2px)}.btn:disabled{opacity:.5;cursor:wait;transform:none}
+.btn.ghost{background:var(--card);color:var(--fg)}.btn.sm{padding:9px 16px;font-size:14px}
+section.view{display:none;padding:48px 0 80px;animation:in .45s ease}
+section.view.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+h1{font-size:clamp(38px,7vw,76px);line-height:1.02;letter-spacing:-.04em;margin:0 0 20px}
+h2{font-size:clamp(26px,4vw,38px);letter-spacing:-.03em;margin:0 0 8px}
+.sub{color:var(--mut);font-size:clamp(17px,2vw,20px);max-width:600px}
+.hero{text-align:center;padding:40px 0 20px}.hero .sub{margin:0 auto 28px}
+.pill{display:inline-block;background:var(--card);border:1px solid var(--line);padding:6px 14px;border-radius:99px;font-size:13px;color:var(--mut);margin-bottom:22px}
+.cmp{position:relative;border-radius:24px;overflow:hidden;aspect-ratio:16/10;background:var(--card);border:1px solid var(--line);user-select:none}
+.cmp>*{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cmp .aft{clip-path:inset(0 0 0 var(--p,50%))}
+.cmp input{position:absolute;inset:0;opacity:0;cursor:ew-resize;z-index:3}
+.cmp .bar{position:absolute;top:0;bottom:0;left:var(--p,50%);width:3px;background:#fff;z-index:2;pointer-events:none;box-shadow:0 0 12px #0006}
+.cmp .bar::after{content:"↔";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:#fff;color:#000;display:grid;place-items:center}
+.tag{position:absolute;top:14px;z-index:2;background:#000a;color:#fff;font-size:12px;padding:4px 12px;border-radius:99px;pointer-events:none;width:auto;height:auto;inset:auto}
+.tag.l{left:14px;top:14px}.tag.r{right:14px;top:14px}
+.note{font-size:13px;color:var(--mut);text-align:center;margin-top:10px}
+.grid{display:grid;gap:16px}.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px;transition:transform .25s}
+.card:hover{transform:translateY(-4px)}
+.card .n{width:38px;height:38px;border-radius:12px;background:var(--inv);color:var(--invfg);display:grid;place-items:center;font-weight:700;margin-bottom:14px}
+.card h3{margin:0 0 6px;font-size:18px}.card p{margin:0;color:var(--mut);font-size:15px}
+.gap{margin-top:64px}
+.cta{background:var(--inv);color:var(--invfg);border-radius:28px;padding:48px 24px;text-align:center}
+.cta .btn{background:var(--invfg);color:var(--inv);margin-top:18px}
+.studio{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:28px}
+@media(max-width:820px){.studio{grid-template-columns:1fr}}
+.drop{border:2px dashed var(--line);border-radius:22px;min-height:260px;display:grid;place-items:center;text-align:center;cursor:pointer;padding:20px;background:var(--card);transition:.2s;overflow:hidden;position:relative}
+.drop:hover,.drop.over{border-color:var(--fg)}
+.drop img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+label.f{display:block;font-weight:600;font-size:14px;margin:18px 0 8px}
+select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:8px 15px;border-radius:99px;cursor:pointer;font:500 14px inherit;font-family:inherit;transition:.15s}
+.chip.on{background:var(--inv);color:var(--invfg);border-color:var(--inv)}
+.msg{border-radius:16px;padding:14px 16px;font-size:14px;margin-top:16px;border:1px solid var(--line);background:var(--card)}
+.msg.err{border-color:#d33;color:#d33}
+.spin{width:22px;height:22px;border:3px solid var(--line);border-top-color:var(--fg);border-radius:50%;animation:sp 1s linear infinite;display:inline-block;vertical-align:middle;margin-right:10px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.prog{height:6px;border-radius:9px;background:var(--line);overflow:hidden;margin-top:12px}.prog b{display:block;height:100%;width:30%;background:var(--fg);animation:bar 1.6s ease-in-out infinite}
+@keyframes bar{0%{margin-left:-30%}100%{margin-left:100%}}
+.hid{display:none!important}
+.stat{font-size:40px;font-weight:800;letter-spacing:-.03em}
+.thumb{border-radius:18px;overflow:hidden;background:var(--card);border:1px solid var(--line)}
+.thumb .cmp{border-radius:0;border:0;aspect-ratio:4/3}.thumb div.in{padding:14px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px}
+.empty{text-align:center;color:var(--mut);padding:50px 0}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mut);font-size:14px;text-align:center}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<noscript><p style="padding:20px;text-align:center">RoomRush is an AI room redesign tool. Please enable JavaScript to upload a photo and generate a design.</p></noscript>
+<header><div class="wrap nav"><a class="logo" href="#home"><i>R</i>RoomRush</a>
+<nav><a href="#home">Home</a><a href="#designer">Designer</a><a href="#gallery">Gallery</a><a href="#ideas">Ideas</a><a href="#dashboard">Dashboard</a></nav></div></header>
+<main class="wrap">
+
+<section class="view" id="home">
+ <div class="hero"><span class="pill">AI Renovation Planner</span>
+ <h1>Transform Your Room with AI</h1>
+ <p class="sub">Upload a photo of any room, pick a style, colors and budget, and RoomRush reimagines it while keeping your layout.</p>
+ <a class="btn" href="#designer">Start Designing →</a></div>
+ <div id="demo" class="gap" style="margin-top:36px"></div>
+ <p class="note">Illustrated example. Your own results come from the AI designer.</p>
+ <div class="gap"><h2>How it works</h2><p class="sub" style="margin-bottom:22px">Four simple steps from photo to plan.</p>
+ <div class="grid g3">
+ <div class="card"><div class="n">1</div><h3>Upload a photo</h3><p>Any room: bedroom, living room, kitchen, bathroom.</p></div>
+ <div class="card"><div class="n">2</div><h3>Choose your look</h3><p>Pick a style, colors and a budget level.</p></div>
+ <div class="card"><div class="n">3</div><h3>Generate</h3><p>AI redesigns your room, keeping its basic layout.</p></div>
+ <div class="card"><div class="n">4</div><h3>Compare &amp; save</h3><p>Slide between before and after, then save favorites.</p></div></div></div>
+ <div class="gap cta"><h2>Ready to see your room differently?</h2><p style="opacity:.7;margin:0">Free to use. No account needed.</p><a class="btn" href="#designer">Start Designing</a></div>
+</section>
+
+<section class="view" id="designer">
+ <h2>AI Room Designer</h2><p class="sub">Upload your room and tell us what you want.</p>
+ <div class="studio"><div>
+  <div class="drop" id="drop"><div id="dropTxt"><div style="font-size:34px">📷</div><b>Click or drop a photo here</b><div class="note">JPG, PNG or WebP, up to 10 MB</div></div></div>
+  <input type="file" id="file" accept="image/*" class="hid">
+  <label class="f" for="room">Room type</label>
+  <select id="room"><option>Living room</option><option>Bedroom</option><option>Kitchen</option><option>Bathroom</option><option>Dining room</option><option>Home office</option><option>Kids room</option></select>
+  <label class="f">Style</label><div class="chips" id="style"></div>
+  <label class="f">Preferred colors (pick any)</label><div class="chips" id="colors"></div>
+  <label class="f" for="budget">Budget</label>
+  <select id="budget"><option value="budget-friendly, simple affordable furniture">Low (under €2,000)</option><option value="mid-range quality furniture" selected>Medium (€2,000–€10,000)</option><option value="high-end designer furniture">High (€10,000–€30,000)</option><option value="luxury premium materials">Luxury (€30,000+)</option></select>
+  <p><button class="btn" id="go" style="width:100%;margin-top:22px">Generate My Design</button></p>
+ </div>
+ <div><div id="out" class="card" style="min-height:260px;display:grid;place-items:center;text-align:center;padding:16px"><div class="note" style="margin:0">Your redesigned room will appear here.</div></div>
+ <div id="status"></div></div></div>
+</section>
+
+<section class="view" id="gallery"><h2>Your Gallery</h2><p class="sub">Favorite designs saved in this browser.</p><div id="galGrid" class="grid g3" style="margin-top:24px"></div></section>
+
+<section class="view" id="ideas"><h2>Renovation Ideas</h2><p class="sub">Quick, practical upgrades. Tap a card to design it.</p><div id="ideaGrid" class="grid g3" style="margin-top:24px"></div></section>
+
+<section class="view" id="dashboard"><h2>Dashboard</h2><p class="sub">Your activity at a glance.</p>
+ <div class="grid g3" style="margin-top:24px" id="stats"></div>
+ <div class="gap"><h2 style="font-size:22px">Recent designs</h2><div id="recent" class="grid g3" style="margin-top:14px"></div></div>
+ <p style="margin-top:32px"><a class="btn ghost sm" href="#designer">New design</a> <button class="btn ghost sm" id="reset">Clear saved data</button></p></section>
+</main>
+<footer><div class="wrap">© RoomRush · AI results are inspiration, not construction plans.</div></footer>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const S={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
+
+/* ---------- AI provider (swap this object to add another service) ---------- */
+const HORDE={url:"https://stablehorde.net/api/v2",key:"0000000000"}; // free anonymous key; slow queue
+async function aiRedesign({image,prompt,w,h,onTick}){
+ const r=await fetch(HORDE.url+"/generate/async",{method:"POST",headers:{"Content-Type":"application/json",apikey:HORDE.key,"Client-Agent":"roomrush:1:web"},
+  body:JSON.stringify({prompt:prompt+" ### blurry, distorted, people, text, watermark",source_image:image,source_processing:"img2img",r2:false,nsfw:false,
+  params:{sampler_name:"k_euler_a",cfg_scale:7.5,denoising_strength:.62,width:w,height:h,steps:25,n:1}})});
+ if(!r.ok)throw new Error("The AI service refused the request ("+r.status+"). "+(await r.text()).slice(0,140));
+ const {id}=await r.json();
+ for(let i=0;i<200;i++){await new Promise(z=>setTimeout(z,3000));
+  const c=await (await fetch(HORDE.url+"/generate/check/"+id)).json();
+  onTick(c);
+  if(c.faulted)throw new Error("The AI service reported a failure. Please try again.");
+  if(c.done){const s=await (await fetch(HORDE.url+"/generate/status/"+id)).json();
+   const g=s.generations&&s.generations[0];if(!g||!g.img)throw new Error("The AI service returned no image.");
+   return "data:image/webp;base64,"+g.img;}}
+ throw new Error("Timed out waiting in the free queue. Try again in a few minutes.");
+}
+
+/* ---------- illustration for homepage demo ---------- */
+const svg=a=>"data:image/svg+xml;utf8,"+encodeURIComponent(a?
+`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500'><rect width='800' height='500' fill='#ece8e1'/><rect y='360' width='800' height='140' fill='#b9987a'/><rect x='80' y='70' width='170' height='190' rx='6' fill='#dfeaf2' stroke='#fff' stroke-width='8'/><rect x='250' y='250' width='360' height='90' rx='26' fill='#222'/><rect x='250' y='210' width='360' height='60' rx='22' fill='#333'/><rect x='300' y='400' width='260' height='50' rx='25' fill='#f6f3ee'/><circle cx='690' cy='260' r='34' fill='#4d7a55'/><rect x='684' y='290' width='12' height='80' fill='#7a5a3c'/><rect x='640' y='120' width='90' height='120' rx='4' fill='#fff' stroke='#222' stroke-width='5'/></svg>`:
+`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500'><rect width='800' height='500' fill='#cfcfcf'/><rect y='360' width='800' height='140' fill='#8f8f8f'/><rect x='80' y='70' width='170' height='190' fill='#aeb6bb' stroke='#bbb' stroke-width='8'/><rect x='300' y='330' width='120' height='60' fill='#9a9a9a'/><rect x='520' y='150' width='4' height='200' fill='#aaa'/></svg>`);
+function cmp(b,a,lb="Before",la="After"){const d=document.createElement("div");d.className="cmp";
+ d.innerHTML=`<img src="${b}" alt="${lb}"><img class="aft" src="${a}" alt="${la}"><span class="tag l">${lb}</span><span class="tag r">${la}</span><div class="bar"></div><input type="range" min="0" max="100" value="50" aria-label="Compare before and after">`;
+ d.querySelector("input").oninput=e=>d.style.setProperty("--p",e.target.value+"%");return d}
+$("#demo").append(cmp(svg(0),svg(1)));
+
+/* ---------- options ---------- */
+const STYLES=["Modern","Scandinavian","Luxury","Minimalist","Industrial","Bohemian","Japandi"];
+const COLORS=["White","Black","Grey","Beige","Navy","Sage green","Warm wood","Terracotta"];
+let style="Modern",colors=new Set(["White","Grey"]);
+function chips(el,list,sel,multi){el.innerHTML="";list.forEach(t=>{const b=document.createElement("button");b.type="button";b.className="chip"+(sel(t)?" on":"");b.textContent=t;
+ b.onclick=()=>{multi?(colors.has(t)?colors.delete(t):colors.add(t)):style=t;chips(el,list,sel,multi)};el.append(b)})}
+const drawChips=()=>{chips($("#style"),STYLES,t=>t===style,0);chips($("#colors"),COLORS,t=>colors.has(t),1)};drawChips();
+
+/* ---------- upload ---------- */
+let photo=null;
+const drop=$("#drop"),file=$("#file");
+drop.onclick=()=>file.click();
+["dragover","dragenter"].forEach(e=>drop.addEventListener(e,x=>{x.preventDefault();drop.classList.add("over")}));
+["dragleave","drop"].forEach(e=>drop.addEventListener(e,x=>{x.preventDefault();drop.classList.remove("over")}));
+drop.addEventListener("drop",e=>load(e.dataTransfer.files[0]));
+file.onchange=()=>load(file.files[0]);
+function msg(t,c=""){$("#status").innerHTML=t?`<div class="msg ${c}">${t}</div>`:""}
+function load(f){
+ if(!f)return;
+ if(!f.type.startsWith("image/"))return msg("That file isn’t an image. Please choose a JPG, PNG or WebP photo.","err");
+ if(f.size>10*1048576)return msg("That photo is over 10 MB. Please choose a smaller one.","err");
+ const img=new Image(),u=URL.createObjectURL(f);
+ img.onerror=()=>msg("We couldn’t read that image. Try a different file.","err");
+ img.onload=()=>{const k=Math.min(1,512/Math.max(img.width,img.height));
+  const w=Math.max(64,Math.round(img.width*k/64)*64),h=Math.max(64,Math.round(img.height*k/64)*64);
+  const c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(img,0,0,w,h);
+  photo={url:c.toDataURL("image/jpeg",.85),w,h};URL.revokeObjectURL(u);
+  drop.innerHTML=`<img src="${photo.url}" alt="Your room">`;msg("");};
+ img.src=u;
+}
+
+/* ---------- generate ---------- */
+let last=null;
+$("#go").onclick=async()=>{
+ if(!photo)return msg("Please upload a photo of your room first.","err");
+ const btn=$("#go"),room=$("#room").value;
+ const prompt=`${room} interior, ${style.toLowerCase()} style, ${[...colors].join(", ").toLowerCase()||"neutral"} color palette, ${$("#budget").value}, same room layout, professional interior design photography, bright, high detail`;
+ btn.disabled=true;btn.textContent="Generating…";
+ $("#out").innerHTML=`<div><span class="spin"></span>Designing your room…</div>`;
+ msg(`<span class="spin"></span><span id="q">Sending your photo to the AI service…</span><div class="prog"><b></b></div>`);
+ try{
+  const out=await aiRedesign({image:photo.url.split(",")[1],prompt,w:photo.w,h:photo.h,onTick:c=>{const q=$("#q");if(q)q.textContent=c.processing?"Rendering your design…":`In the free queue (position ${c.queue_position??"?"}, about ${c.wait_time??"?"}s)…`}});
+  last={id:Date.now(),before:photo.url,after:out,room,style,date:new Date().toLocaleDateString()};
+  S.set("count",S.get("count",0)+1);
+  const box=$("#out");box.innerHTML="";box.style.display="block";box.style.padding="0";box.append(cmp(last.before,last.after));
+  msg(`Done. <button class="btn sm" id="save">♥ Save to gallery</button> <a class="btn sm ghost" download="roomrush-design.webp" href="${out}">Download</a>`);
+  $("#save").onclick=()=>{const g=S.get("gal",[]);g.unshift(last);if(S.set("gal",g.slice(0,12)))msg("Saved! See it in your <a href='#gallery'><u>Gallery</u></a>.");else msg("Browser storage is full or blocked, so we couldn’t save this design.","err")};
+ }catch(e){
+  $("#out").innerHTML=`<div class="note" style="margin:0">No design was generated.</div>`;
+  const offline=e instanceof TypeError;
+  msg(offline?"<b>The AI service isn’t connected.</b> Your browser couldn’t reach the image-generation service (offline, blocked network, or a hosted preview that disallows outside connections). No image was generated. Open this page as a local file or on your own hosting and try again.":"<b>Something went wrong.</b> "+e.message,"err");
+ }
+ btn.disabled=false;btn.textContent="Generate My Design";
+};
+
+/* ---------- ideas / gallery / dashboard ---------- */
+const IDEAS=[["Living room","Layered lighting","Swap one ceiling light for floor and table lamps to make the room feel warmer.","Scandinavian"],["Kitchen","Repaint cabinets","A new color on existing cabinets is the cheapest big change.","Modern"],["Bathroom","Large-format tiles","Fewer grout lines make small bathrooms look bigger and cleaner.","Minimalist"],["Bedroom","Statement headboard","Wood or upholstered panels add depth for little money.","Japandi"],["Home office","Wall-mounted storage","Free your floor and desk with shelves and rails.","Industrial"],["Dining room","Warm accent wall","One deep color behind the table creates instant luxury.","Luxury"]];
+$("#ideaGrid").innerHTML=IDEAS.map((x,i)=>`<a class="card" href="#designer" data-i="${i}"><div class="note" style="text-align:left">${x[0]}</div><h3>${x[1]}</h3><p>${x[2]}</p></a>`).join("");
+$$("#ideaGrid a").forEach(a=>a.onclick=()=>{const x=IDEAS[a.dataset.i];$("#room").value=x[0];style=x[3];drawChips()});
+function thumbs(el,list,del){el.innerHTML="";
+ if(!list.length){el.innerHTML=`<div class="empty" style="grid-column:1/-1">Nothing here yet. <a href="#designer"><u>Create a design</u></a>.</div>`;return}
+ list.forEach(g=>{const t=document.createElement("div");t.className="thumb";t.append(cmp(g.before,g.after));
+  const i=document.createElement("div");i.className="in";i.innerHTML=`<span>${g.room} · ${g.style}<br><small style="color:var(--mut)">${g.date}</small></span>`;
+  if(del){const b=document.createElement("button");b.className="btn ghost sm";b.textContent="Remove";b.onclick=()=>{S.set("gal",S.get("gal",[]).filter(x=>x.id!==g.id));render()};i.append(b)}
+  t.append(i);el.append(t)})}
+function render(){const g=S.get("gal",[]);thumbs($("#galGrid"),g,1);thumbs($("#recent"),g.slice(0,3),0);
+ $("#stats").innerHTML=[["Designs generated",S.get("count",0)],["Saved favorites",g.length],["Styles tried",new Set(g.map(x=>x.style)).size]].map(s=>`<div class="card"><div class="stat">${s[1]}</div><p>${s[0]}</p></div>`).join("")}
+$("#reset").onclick=()=>{if(confirm("Delete all saved designs and stats?")){["gal","count"].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});render()}};
+
+/* ---------- router ---------- */
+const V=["home","designer","gallery","ideas","dashboard"];
+function route(){const h=(location.hash||"#home").slice(1);const v=V.includes(h)?h:"home";
+ $$("section.view").forEach(s=>s.classList.toggle("on",s.id===v));$$("nav a").forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+v));
+ render();window.scrollTo(0,0)}
+addEventListener("hashchange",route);route();
+</script></body></html>
